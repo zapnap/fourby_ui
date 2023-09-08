@@ -1,7 +1,7 @@
 import { Account } from '../components/Account'
 import { Connect } from '../components/Connect'
 import { Connected } from '../components/Connected'
-import { Counter } from '../components/Counter'
+import { Minter } from '../components/Minter'
 import { NetworkSwitcher } from '../components/NetworkSwitcher'
 
 export function Page() {
@@ -14,7 +14,7 @@ export function Page() {
       <Connected>
         <Account />
         <hr />
-        <Counter />
+        <Minter />
         <hr />
         <NetworkSwitcher />
       </Connected>
