@@ -3,20 +3,17 @@ import { Connect } from '../components/Connect'
 import { Connected } from '../components/Connected'
 import { Minter } from '../components/Minter'
 import { NetworkSwitcher } from '../components/NetworkSwitcher'
+import { ConnectButton } from '@rainbow-me/rainbowkit'
 
 export function Page() {
   return (
     <>
       <h1>wagmi + Next.js + Foundry</h1>
 
-      <Connect />
+      <ConnectButton />
 
       <Connected>
-        <Account />
-        <hr />
         <Minter />
-        <hr />
-        <NetworkSwitcher />
       </Connected>
     </>
   )

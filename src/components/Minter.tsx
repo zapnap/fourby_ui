@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useNetwork, useAccount, useWaitForTransaction } from 'wagmi'
 import { readContract } from '@wagmi/core'
+import { BaseError } from 'viem'
 import { sanitize } from 'dompurify'
 
 import {
@@ -48,7 +49,7 @@ export function ShowImage() {
     } catch (e) {
       console.log(e)
       setImageData("")
-      setError((e as Error)?.message)
+      setError((e as BaseError)?.shortMessage)
     }
   }
 
