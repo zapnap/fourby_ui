@@ -1,8 +1,9 @@
 'use client'
 
 import { useState } from 'react'
-import { useNetwork, useAccount, useWaitForTransaction, useContractRead } from 'wagmi'
-import DOMPurify from 'dompurify'
+import { useNetwork, useAccount, useWaitForTransaction } from 'wagmi'
+import { readContract } from '@wagmi/core'
+import { sanitize } from 'dompurify'
 
 import {
   fourbyNftABI,
@@ -22,28 +23,36 @@ export function Minter() {
 
 export function ShowImage() {
   const [tokenId, setTokenId] = useState("1")
-  const [imageData, setImageData] = useState('')
+  const [imageData, setImageData] = useState("")
+  const [error, setError] = useState("")
   const { address, isConnected } = useAccount()
   const { chain } = useNetwork()
 
-  const addresses : Record<number, String> = fourbyNftAddress
-  const contractAddress = addresses[chain ? chain.id : 1]
+  const isValid = () => {
+    return !!Number(tokenId) && Number(tokenId) > 0
+  }
 
-  const { data, error, isLoading, isSuccess } = useContractRead({
-    address: contractAddress as `0x${string}`,
-    abi: fourbyNftABI,
-    functionName: "tokenURI",
-    args: [BigInt(tokenId)],
-    enabled: Boolean(address),
-    onSuccess: (data) => {
-      setImageData(DecodeImage(data))
-    },
-    onError: (error) => {
+  const updateImage = async () => {
+    const addresses : Record<number, String> = fourbyNftAddress
+    const contractAddress = addresses[chain ? chain.id : 1]
+
+    try {
+      const data = await readContract({
+        address: contractAddress as `0x${string}`,
+        abi: fourbyNftABI,
+        functionName: "tokenURI",
+        args: [BigInt(tokenId)]
+      })
+      setImageData(decodeImage(data))
+      setError("")
+    } catch (e) {
+      console.log(e)
       setImageData("")
+      setError((e as Error)?.message)
     }
-  })
+  }
 
-  const DecodeImage = (data: string) => {
+  const decodeImage = (data: string) => {
     // data:application/json;base64
     const encodedJson = atob(data.substring(28));
     const decodedJson = JSON.parse(encodedJson);
@@ -56,11 +65,13 @@ export function ShowImage() {
     <div>
       <input
         value={tokenId}
+        type="number"
         onChange={(e) => setTokenId(e.target.value)}
       />
-      { error && <div>Error: {error.message}</div> }
+      <button disabled={!isValid()} onClick={async () => updateImage()}>Fetch</button>
       <div style={{width: '250px', height: '250px'}}>
-        <div dangerouslySetInnerHTML={{__html: imageData}} />
+        <div dangerouslySetInnerHTML={{__html: sanitize(imageData)}} />
+        {error && <div><strong>ERROR:</strong> {error}</div>}
       </div>
     </div>
   )
