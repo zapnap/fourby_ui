@@ -1,7 +1,12 @@
-import { Providers } from './providers'
+import "@rainbow-me/rainbowkit/styles.css"
+import "../styles/globals.css"
+
+import { ConnectButton } from "@rainbow-me/rainbowkit"
+import { Providers } from "./providers"
+import { Nav } from "../components/Nav"
 
 export const metadata = {
-  title: 'wagmi',
+  title: "Fourby",
 }
 
 export default function RootLayout({
@@ -12,7 +17,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <Providers>{children}</Providers>
+        <Providers>
+          <Nav></Nav>
+          <section className="mx-auto max-w-screen-xl py-2 lg:py-4">
+            <section>
+              {children}
+            </section>
+          </section>
+        </Providers>
       </body>
     </html>
   )

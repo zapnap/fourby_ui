@@ -1,22 +1,16 @@
-import { Account } from '../components/Account'
-import { Connect } from '../components/Connect'
-import { Connected } from '../components/Connected'
-import { Minter } from '../components/Minter'
-import { NetworkSwitcher } from '../components/NetworkSwitcher'
-import { ConnectButton } from '@rainbow-me/rainbowkit'
+import { Connected } from "../components/Connected"
+import { Minter } from "../components/Minter"
 
-export function Page() {
+export default function Page({
+  params,
+  searchParams,
+}: {
+  params: { slug: string }
+  searchParams: { [key: string]: string | string[] | undefined }
+}) {
   return (
-    <>
-      <h1>wagmi + Next.js + Foundry</h1>
-
-      <ConnectButton />
-
-      <Connected>
-        <Minter />
-      </Connected>
-    </>
+    <Connected>
+      <Minter />
+    </Connected>
   )
 }
-
-export default Page

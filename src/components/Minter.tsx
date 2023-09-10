@@ -1,10 +1,12 @@
-'use client'
+"use client"
 
-import { useState } from 'react'
-import { useNetwork, useAccount, useWaitForTransaction } from 'wagmi'
-import { readContract } from '@wagmi/core'
-import { BaseError } from 'viem'
-import { sanitize } from 'dompurify'
+import { useState } from "react"
+import { useNetwork, useAccount, useWaitForTransaction } from "wagmi"
+import { readContract } from "@wagmi/core"
+import { BaseError } from "viem"
+import { sanitize } from "dompurify"
+
+import { Card, CardBody, Input, Button, Typography } from "@material-tailwind/react"
 
 import {
   fourbyNftABI,
@@ -12,7 +14,7 @@ import {
   useFourbyNftMintTo,
   useFourbyNftTokenUri,
   usePrepareFourbyNftMintTo,
-} from '../generated'
+} from "../generated"
 
 export function Minter() {
   return (
@@ -63,18 +65,35 @@ export function ShowImage() {
   }
 
   return (
-    <div>
-      <input
-        value={tokenId}
-        type="number"
-        onChange={(e) => setTokenId(e.target.value)}
-      />
-      <button disabled={!isValid()} onClick={async () => updateImage()}>Fetch</button>
-      <div style={{width: '250px', height: '250px'}}>
-        <div dangerouslySetInnerHTML={{__html: sanitize(imageData)}} />
-        {error && <div><strong>ERROR:</strong> {error}</div>}
-      </div>
-    </div>
+    <Card color="transparent" shadow={false}>
+      <CardBody>
+        <Typography variant="h4" color="blue-gray">
+          Hello Sers
+        </Typography>
+        <Typography color="gray" className="mt-1 font-normal">
+          Wanna look up Fourby token art?
+        </Typography>
+        <form className="mt-8 mb-2 w-80 max-w-screen-lg sm:w-96">
+          <Input
+            size="lg"
+            label="Token ID"
+            value={tokenId}
+            type="number"
+            onChange={(e) => setTokenId(e.target.value)}
+          />
+          <Button
+            className="mt-4"
+            disabled={!isValid()}
+            onClick={async () => updateImage()}>
+              Fetch
+          </Button>
+        </form>
+        <div style={{width: '250px', height: '250px'}}>
+          <div dangerouslySetInnerHTML={{__html: sanitize(imageData)}} />
+          {error && <p className="text-red-500">ERROR: {error}</p>}
+        </div>
+      </CardBody>
+    </Card>
   )
 }
 
