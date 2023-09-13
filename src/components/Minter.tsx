@@ -77,6 +77,7 @@ export function ShowImage() {
           <Input
             size="lg"
             label="Token ID"
+            crossOrigin="true"
             value={tokenId}
             type="number"
             onChange={(e) => setTokenId(e.target.value)}
