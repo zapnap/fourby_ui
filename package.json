@@ -5,8 +5,8 @@
   "scripts": {
     "anvil": "source .env && anvil --fork-url $ANVIL_FORK_URL --chain-id $ANVIL_CHAIN_ID",
     "build": "npm run wagmi && next build",
-    "deploy": "source .env && cd contracts && forge create FourbyNFT --rpc-url $FORGE_RPC_URL --private-key $FORGE_PRIVATE_KEY --etherscan-api-key $ETHERSCAN_API_KEY --verify --constructor-args \"$FORGE_OWNER_ADDRESS\" contracts/src/fourby_nft.sol:FourbyNFT",
-    "deploy:anvil": "source .env && cd contracts && forge create FourbyNFT --rpc-url http://127.0.0.1:8545 --private-key 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80 --constructor-args \"$FORGE_OWNER_ADDRESS\" contracts/src/fourby_nft.sol:FourbyNFT",
+    "deploy": "source .env && cd contracts && forge create FourbyNFT --rpc-url $GOERLI_RPC_URL --private-key $GOERLI_PRIVATE_KEY --etherscan-api-key $ETHERSCAN_API_KEY --verify --constructor-args \"$GOERLI_OWNER_ADDRESS\" contracts/src/fourby_nft.sol:FourbyNFT",
+    "deploy:anvil": "source .env && cd contracts && forge script script/FourbyNFT.s.sol:FourbyScript --rpc-url=$FORGE_RPC_URL --private-key $FORGE_PRIVATE_KEY --broadcast -vvvv && cd .. && npm run wagmi",
     "dev": "npm run wagmi && next dev",
     "dev:foundry": "npm run dev & wagmi generate --watch & npm run anvil",
     "start": "next start",
@@ -29,6 +29,7 @@
     "wagmi": "^1.0.6"
   },
   "devDependencies": {
+    "@types/fs-extra": "^11.0.2",
     "@types/node": "^17.0.31",
     "@types/react": "^18.0.9",
     "@types/react-dom": "^18.0.3",
