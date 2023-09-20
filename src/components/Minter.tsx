@@ -57,11 +57,11 @@ export function ShowImage() {
 
   const decodeImage = (data: string) => {
     // data:application/json;base64
-    const encodedJson = atob(data.substring(28));
+    const encodedJson = Buffer.from(data.substring(28), "base64").toString();
     const decodedJson = JSON.parse(encodedJson);
     const encodedImage = decodedJson.image
     // data:image/svg+xml;base64,
-    return atob(encodedImage.substring(26));
+    return Buffer.from(encodedImage.substring(26), "base64").toString();
   }
 
   return (
