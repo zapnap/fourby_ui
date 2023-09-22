@@ -1,9 +1,9 @@
 import { configureChains, createConfig } from 'wagmi'
 import { getDefaultWallets, RainbowKitProvider } from '@rainbow-me/rainbowkit'
 import { foundry, goerli, mainnet } from 'wagmi/chains'
-import { CoinbaseWalletConnector } from 'wagmi/connectors/coinbaseWallet'
-import { InjectedConnector } from 'wagmi/connectors/injected'
-import { MetaMaskConnector } from 'wagmi/connectors/metaMask'
+// import { CoinbaseWalletConnector } from 'wagmi/connectors/coinbaseWallet'
+// import { InjectedConnector } from 'wagmi/connectors/injected'
+// import { MetaMaskConnector } from 'wagmi/connectors/metaMask'
 // import { WalletConnectConnector } from 'wagmi/connectors/walletConnect'
 
 import { publicProvider } from 'wagmi/providers/public'
@@ -18,6 +18,7 @@ export const { chains, publicClient, webSocketPublicClient } = configureChains(
   ],
 )
 
+/*
 const connectors = [
   new MetaMaskConnector({ chains }),
   new CoinbaseWalletConnector({
@@ -34,14 +35,13 @@ const connectors = [
     },
   }),
 ]
+*/
 
-/*
 const { connectors } = getDefaultWallets({
   appName: 'Fourby',
-  projectId: '', //String(process.env.WALLETCONNECT_PROJECT_ID),
+  projectId: String(process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID),
   chains
 })
-*/
 
 export const config = createConfig({
   autoConnect: true,
