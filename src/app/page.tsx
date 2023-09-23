@@ -1,12 +1,13 @@
 "use client"
 
-import { use, useEffect } from "react"
+import { use, useRef, useEffect } from "react"
 
 import toast, { Toaster } from "react-hot-toast"
 import { toastOptions } from "../util/toasthelper"
 
-import { BaseError } from "viem"
+import { BaseError, decodeEventLog } from "viem"
 import { useNetwork, useAccount, useWaitForTransaction } from "wagmi"
+import { waitForTransaction } from "@wagmi/core"
 import type { TransactionReceipt } from "viem"
 
 import { Button, Card, CardBody, Typography } from "@material-tailwind/react"
@@ -16,8 +17,11 @@ import { FourbyImage } from "../components/FourbyImage"
 
 import {
   useFourbyNftMintTo,
-  useFourbyNftTokenUri,
   usePrepareFourbyNftMintTo,
+  useFourbyNftTokenUri,
+  useFourbyNftEvent,
+  fourbyNftAddress,
+  fourbyNftABI,
 } from "../generated"
 
 export default function Page({
@@ -27,11 +31,17 @@ export default function Page({
   params: { slug: string }
   searchParams: { [key: string]: string | string[] | undefined }
 }) {
+  const txToastId = useRef("")
+  const mintId = useRef(0)
   const { address } = useAccount()
   const { chain } = useNetwork()
 
-  const { config, error, isError } = usePrepareFourbyNftMintTo({
+  const { config } = usePrepareFourbyNftMintTo({
     args: [address],
+    onError: (err) => {
+      console.log(err)
+      toast.error((err as BaseError)?.shortMessage)
+    }
   })
   const {
     data: mintData,
@@ -42,29 +52,41 @@ export default function Page({
     write: mint,
   } = useFourbyNftMintTo({
     ...config,
-    // onError: (error) => {
-      // console.log(error)
-      // toast.error((error as BaseError)?.shortMessage)
-    // },
+    onSuccess: (data) => {
+      console.log(data)
+      txToastId.current = toast.loading("Waiting for transaction confirmation...")
+    },
+    onError: (err) => {
+      console.log(err)
+      toast.error((err as BaseError)?.shortMessage)
+    },
   })
+  /*
   const { refetch } = useFourbyNftTokenUri({
     args: [BigInt(1)],
   })
-  const { isLoading } = useWaitForTransaction({
-    hash: mintData?.hash,
-    onSuccess: (data:TransactionReceipt) => {
-      console.log(data)
-      toast.success(ProcessingMessage({ hash: data?.transactionHash}))
-      // refetch()
+  */
+
+  useWaitForTransaction({
+    hash: mintData?.hash as `0x${string}`,
+    confirmations: 1,
+    onSuccess: (data) => {
+      data.logs.forEach((log) => {
+        const decodedLog = decodeEventLog({
+          abi: fourbyNftABI,
+          data: log.data,
+          topics: log.topics,
+        })
+        console.log(decodedLog)
+        const args = decodedLog.args as any
+        if (decodedLog.eventName === "Transfer" && args.to === address) {
+          console.log(args.id)
+          mintId.current = Number(args.id)
+        }
+      })
+      toast.success("Transaction confirmed", { id: txToastId.current })
     }
   })
-
-  useEffect(() => {
-    if (isError) {
-      console.log(error)
-      toast.error((error as BaseError)?.shortMessage)
-    }
-  }, [isError, error])
 
   function ProcessingMessage({ hash }: { hash?: `0x${string}` }) {
     const etherscan = chain?.blockExplorers?.etherscan
@@ -94,7 +116,7 @@ export default function Page({
                 <Button
                   className="mt-4 bg-indigo-500 hover:bg-indigo-600"
                   disabled={isMintLoading}
-                  onClick={async () => mint?.()}>
+                  onClick={() => mint?.()}>
                     Mint
                 </Button>
               </CardBody>
@@ -103,7 +125,7 @@ export default function Page({
           <div className="break-inside-avoid-column">
             <Card color="transparent" shadow={false}>
               <CardBody>
-                <FourbyImage id="1" />
+                <FourbyImage id={mintId.current} />
               </CardBody>
             </Card>
           </div>
