@@ -1,6 +1,6 @@
 "use client"
 
-import { use, useRef, useEffect } from "react"
+import { use, useRef, useState, useEffect } from "react"
 
 import toast, { Toaster } from "react-hot-toast"
 import { toastOptions } from "../util/toasthelper"
@@ -32,7 +32,7 @@ export default function Page({
   searchParams: { [key: string]: string | string[] | undefined }
 }) {
   const txToastId = useRef("")
-  const mintId = useRef(0)
+  const [mintState, setMintState] = useState({ id: "1" })
   const { address } = useAccount()
   const { chain } = useNetwork()
 
@@ -53,7 +53,6 @@ export default function Page({
   } = useFourbyNftMintTo({
     ...config,
     onSuccess: (data) => {
-      console.log(data)
       txToastId.current = toast.loading("Waiting for transaction confirmation...")
     },
     onError: (err) => {
@@ -77,11 +76,12 @@ export default function Page({
           data: log.data,
           topics: log.topics,
         })
-        console.log(decodedLog)
         const args = decodedLog.args as any
         if (decodedLog.eventName === "Transfer" && args.to === address) {
-          console.log(args.id)
-          mintId.current = Number(args.id)
+          setMintState(mintState => ({
+            ...mintState,
+            id: String(Number(args.id))
+          }))
         }
       })
       toast.success("Transaction confirmed", { id: txToastId.current })
@@ -125,7 +125,7 @@ export default function Page({
           <div className="break-inside-avoid-column">
             <Card color="transparent" shadow={false}>
               <CardBody>
-                <FourbyImage id={mintId.current} />
+                <FourbyImage id={mintState.id} />
               </CardBody>
             </Card>
           </div>

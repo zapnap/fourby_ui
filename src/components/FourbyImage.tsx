@@ -1,6 +1,6 @@
 "use client"
 
-import { use, useState } from "react"
+import { use, useEffect, useState } from "react"
 import { useNetwork, useAccount, useWaitForTransaction } from "wagmi"
 import { readContract } from "@wagmi/core"
 import { BaseError } from "viem"
@@ -21,16 +21,16 @@ interface FourbyImageProps {
 }
 
 export function FourbyImage({ id }: FourbyImageProps) {
-  const [tokenId, setTokenId] = useState(id || "1") // TODO: get latest by default
+  const [customTokenId, setCustomTokenId] = useState(id || "1") // TODO: get latest by default
   const [imageData, setImageData] = useState("")
   const [error, setError] = useState("")
   const { chain } = useNetwork()
 
   const isValid = () => {
-    return !!Number(tokenId) && Number(tokenId) > 0
+    return !!Number(customTokenId) && Number(customTokenId) > 0
   }
 
-  const updateImage = async () => {
+  const updateImage = async (tokenId:string) => {
     const addresses : Record<number, String> = fourbyNftAddress
     const contractAddress = addresses[chain ? chain.id : 1]
 
@@ -59,21 +59,26 @@ export function FourbyImage({ id }: FourbyImageProps) {
     return Buffer.from(encodedImage.substring(26), "base64").toString();
   }
 
+  useEffect(() => {
+    setCustomTokenId(id)
+    updateImage(id)
+  }, [id]) // eslint-disable-line react-hooks/exhaustive-deps
+
   return (
-    <div>
-      <form className="mt-8 mb-2 w-80">
+    <div className="w-250">
+      <form className="mt-8 mb-2 grid grid-cols-2 gap-x-6">
         <Input
           size="lg"
           label="Token ID"
           crossOrigin="true"
-          value={tokenId}
+          value={customTokenId}
           type="number"
-          onChange={(e) => setTokenId(e.target.value)}
+          placeholder={id}
+          onChange={(e) => setCustomTokenId(e.target.value)}
         />
         <Button
-          className="mt-4"
           disabled={!isValid()}
-          onClick={async () => updateImage()}>
+          onClick={async () => updateImage(customTokenId)}>
             Fetch
         </Button>
       </form>
