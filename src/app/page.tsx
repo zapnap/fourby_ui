@@ -18,9 +18,7 @@ import { FourbyImage } from "../components/FourbyImage"
 import {
   useFourbyNftMintTo,
   usePrepareFourbyNftMintTo,
-  useFourbyNftTokenUri,
-  useFourbyNftEvent,
-  fourbyNftAddress,
+  useFourbyNftCurrentTokenId,
   fourbyNftABI,
 } from "../generated"
 
@@ -32,9 +30,16 @@ export default function Page({
   searchParams: { [key: string]: string | string[] | undefined }
 }) {
   const txToastId = useRef("")
-  const [mintState, setMintState] = useState({ id: "1" })
+  const [mintState, setMintState] = useState({ id: "0" })
   const { address } = useAccount()
   const { chain } = useNetwork()
+
+  useFourbyNftCurrentTokenId({
+    args: [],
+    onSuccess: (data) => {
+      setMintState({ id: String(Number(data)) })
+    }
+  })
 
   const { config } = usePrepareFourbyNftMintTo({
     args: [address],
@@ -60,15 +65,10 @@ export default function Page({
       toast.error((err as BaseError)?.shortMessage)
     },
   })
-  /*
-  const { refetch } = useFourbyNftTokenUri({
-    args: [BigInt(1)],
-  })
-  */
 
   useWaitForTransaction({
     hash: mintData?.hash as `0x${string}`,
-    confirmations: 1,
+    // confirmations: 1,
     onSuccess: (data) => {
       data.logs.forEach((log) => {
         const decodedLog = decodeEventLog({
@@ -122,13 +122,15 @@ export default function Page({
               </CardBody>
             </Card>
           </div>
-          <div className="break-inside-avoid-column">
-            <Card color="transparent" shadow={false}>
-              <CardBody>
-                <FourbyImage id={mintState.id} />
-              </CardBody>
-            </Card>
-          </div>
+          {mintState.id !== "0" &&
+            <div className="break-inside-avoid-column">
+              <Card color="transparent" shadow={false}>
+                <CardBody>
+                  <FourbyImage id={mintState.id} />
+                </CardBody>
+              </Card>
+            </div>
+          }
         </div>
       </Connected>
       <Toaster toastOptions={toastOptions}/>
