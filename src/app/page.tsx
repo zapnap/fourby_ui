@@ -55,22 +55,26 @@ export default function Page({
     isLoading: isMintLoading,
     isSuccess: isMintSuccess,
     write: mint,
-  } = useFourbyNftMintTo({
-    ...config,
-    onSuccess: (data) => {
-      txToastId.current = toast.loading("Waiting for transaction confirmation...")
-    },
-    onError: (err) => {
-      console.log(err)
-      toast.error((err as BaseError)?.shortMessage)
-    },
-  })
+  } = useFourbyNftMintTo(config)
 
-  useWaitForTransaction({
-    hash: mintData?.hash as `0x${string}`,
-    // confirmations: 1,
-    onSuccess: (data) => {
-      data.logs.forEach((log) => {
+  useEffect(() => {
+    if (isMintLoading) {
+      txToastId.current = toast.loading(<ProcessingMessage loading={true} hash={mintData?.hash} />, { id: txToastId.current })
+    } else if (isMintError) {
+      txToastId.current = toast.error(<ProcessingMessage error={(mintError as BaseError)?.shortMessage} hash={mintData?.hash} />, { id: txToastId.current })
+    } else if (isMintSuccess) {
+      txToastId.current = toast.success(<ProcessingMessage success={true} hash={mintData?.hash} />, { id: txToastId.current })
+    }
+  }, [isMintLoading, isMintError, isMintSuccess]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  const {
+    isSuccess: waitForTransactionSuccess,
+    data: waitForTransactionData,
+  } = useWaitForTransaction({ hash: mintData?.hash as `0x${string}` })
+
+  useEffect(() => {
+    if (waitForTransactionSuccess) {
+      waitForTransactionData?.logs.forEach((log) => {
         const decodedLog = decodeEventLog({
           abi: fourbyNftABI,
           data: log.data,
@@ -84,15 +88,22 @@ export default function Page({
           }))
         }
       })
-      toast.success("Transaction confirmed", { id: txToastId.current })
     }
-  })
+  }, [waitForTransactionSuccess, waitForTransactionData]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  function ProcessingMessage({ hash }: { hash?: `0x${string}` }) {
+  function ProcessingMessage({ success, loading, error, hash }: { success?: boolean, loading?: boolean, error?: String, hash?: `0x${string}` }) {
     const etherscan = chain?.blockExplorers?.etherscan
     return (
       <span>
-        Processing transaction...{' '}
+        {loading &&
+          <span>Processing transaction...{' '}</span>
+        }
+        {error !== "" &&
+          <span>{error}{' '}</span>
+        }
+        {success &&
+          <span>Transaction confirmed{' '}</span>
+        }
         {etherscan && (
           <a href={`${etherscan.url}/tx/${hash}`}>{etherscan.name}</a>
         )}
