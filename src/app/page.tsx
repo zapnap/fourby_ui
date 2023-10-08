@@ -134,7 +134,7 @@ export default function Page({
             </Card>
           </div>
           {mintState.id !== "0" &&
-            <div className="break-inside-avoid-column">
+            <div className="break-inside-avoid-column float-right">
               <Card color="transparent" shadow={false}>
                 <CardBody>
                   <FourbyImage id={mintState.id} />

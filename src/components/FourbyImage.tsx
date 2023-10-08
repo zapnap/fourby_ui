@@ -84,7 +84,7 @@ export function FourbyImage({ id }: FourbyImageProps) {
             Fetch
         </Button>
       </form>
-      <div style={{width: '250px', height: '250px'}}>
+      <div className="max-w-[250px]">
         <div dangerouslySetInnerHTML={{__html: sanitize(imageData)}} />
         {error && <p className="text-red-500">ERROR: {error}</p>}
       </div>
