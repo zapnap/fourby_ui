@@ -1,6 +1,6 @@
 "use client"
 
-import { use, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { useNetwork, useAccount, useWaitForTransaction } from "wagmi"
 import { readContract } from "@wagmi/core"
 import { BaseError } from "viem"
@@ -21,7 +21,7 @@ interface FourbyImageProps {
 }
 
 export function FourbyImage({ id }: FourbyImageProps) {
-  const [customTokenId, setCustomTokenId] = useState(id || "1") // TODO: get latest by default
+  const [customTokenId, setCustomTokenId] = useState(id || "0")
   const [imageData, setImageData] = useState("")
   const [error, setError] = useState("")
   const { chain } = useNetwork()
@@ -66,7 +66,7 @@ export function FourbyImage({ id }: FourbyImageProps) {
 
   return (
     <div className="w-250">
-      <form className="mt-8 mb-2 grid grid-cols-2 gap-x-6">
+      <form className="relative w-full max-w-[250px] mb-2">
         <Input
           size="lg"
           label="Token ID"
@@ -74,10 +74,12 @@ export function FourbyImage({ id }: FourbyImageProps) {
           value={customTokenId}
           type="number"
           placeholder={id}
+          className="peer w-full rounded-[7px] border px-4 py-2 pr-20 transition-all"
           onChange={(e) => setCustomTokenId(e.target.value)}
         />
         <Button
           disabled={!isValid()}
+          className="ml-2 bg-gray-500 hover:bg-gray-600 !absolute right-1 top-1 z-10 rounded px-4 py-2.5 transition-all"
           onClick={async () => updateImage(customTokenId)}>
             Fetch
         </Button>
