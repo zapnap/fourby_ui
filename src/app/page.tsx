@@ -122,7 +122,7 @@ export default function Page({
                   Fourby - An NFT Project
                 </Typography>
                 <Typography color="gray" className="mt-1 font-normal">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Sed euismod nisi porta lorem.
+                  A generative art project with a pleasing color palette and dynamic elements to document changes in transaction costs over the course of the mint. Assets are built via SVG and stored 100% on-chain.
                 </Typography>
                 <Button
                   className="mt-4 bg-indigo-500 hover:bg-indigo-600"
