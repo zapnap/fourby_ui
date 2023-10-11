@@ -91,21 +91,33 @@ export default function Page({
     }
   }, [waitForTransactionSuccess, waitForTransactionData]) // eslint-disable-line react-hooks/exhaustive-deps
 
+  function openExplorer(baseUrl: string, hash: `0x${string}` | undefined) {
+    console.log('here we go')
+    const url = hash ? `${baseUrl}/tx/${hash}` : baseUrl
+    window.open(url, "_blank")
+  }
+
   function ProcessingMessage({ success, loading, error, hash }: { success?: boolean, loading?: boolean, error?: String, hash?: `0x${string}` }) {
     const etherscan = chain?.blockExplorers?.etherscan
     return (
       <span>
         {loading &&
-          <span>Processing transaction...{' '}</span>
+          <span>Processing transaction</span>
         }
         {error !== "" &&
-          <span>{error}{' '}</span>
+          <span>{error}</span>
         }
         {success &&
-          <span>Transaction confirmed{' '}</span>
+          <span>Transaction confirmed</span>
         }
-        {etherscan && (
-          <a href={`${etherscan.url}/tx/${hash}`}>{etherscan.name}</a>
+        {etherscan && hash && (
+          <Button
+            className="ml-2"
+            color="light-blue"
+            size="sm"
+            onClick={() => openExplorer(etherscan.url, hash)}>
+            View ↗
+          </Button>
         )}
       </span>
     )
@@ -125,7 +137,8 @@ export default function Page({
                   A generative art project with a pleasing color palette and dynamic elements to document changes in transaction costs over the course of the mint. Assets are built via SVG and stored 100% on-chain.
                 </Typography>
                 <Button
-                  className="mt-4 bg-indigo-500 hover:bg-indigo-600"
+                  className="mt-4"
+                  color="light-blue"
                   disabled={isMintLoading}
                   onClick={() => mint?.()}>
                     Mint
