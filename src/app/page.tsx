@@ -1,14 +1,12 @@
 "use client"
 
-import { use, useRef, useState, useEffect } from "react"
+import { useRef, useState, useEffect } from "react"
 
 import toast, { Toaster } from "react-hot-toast"
 import { toastOptions } from "../util/toasthelper"
 
-import { BaseError, decodeEventLog } from "viem"
+import { BaseError, decodeEventLog, parseEther } from "viem"
 import { useNetwork, useAccount, useWaitForTransaction } from "wagmi"
-import { waitForTransaction } from "@wagmi/core"
-import type { TransactionReceipt } from "viem"
 
 import { Button, Card, CardBody, Typography } from "@material-tailwind/react"
 
@@ -35,18 +33,15 @@ export default function Page({
   const { chain } = useNetwork()
 
   useFourbyNftCurrentTokenId({
-    args: [],
+    // args: [],
     onSuccess: (data) => {
       setMintState({ id: String(Number(data)) })
     }
   })
 
   const { config } = usePrepareFourbyNftMintTo({
-    args: [address],
-    onError: (err) => {
-      console.log(err)
-      toast.error((err as BaseError)?.shortMessage)
-    }
+    args: [address as `0x${string}`],
+    value: parseEther('0'),
   })
   const {
     data: mintData,
@@ -99,6 +94,9 @@ export default function Page({
 
   function ProcessingMessage({ success, loading, error, hash }: { success?: boolean, loading?: boolean, error?: String, hash?: `0x${string}` }) {
     const etherscan = chain?.blockExplorers?.etherscan
+    if (error) {
+      console.log(error)
+    }
     return (
       <span>
         {loading &&
