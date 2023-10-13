@@ -8,10 +8,11 @@ import { foundry, sepolia, mainnet } from 'wagmi/chains'
 
 import { publicProvider } from 'wagmi/providers/public'
 
+const includeTestNetworks = process.env.NODE_ENV === 'development' || process.env.APP_ENV === 'development'
 export const { chains, publicClient, webSocketPublicClient } = configureChains(
   [
     mainnet,
-    ...(process.env.NODE_ENV === 'development' ? [sepolia, foundry] : []),
+    ...(includeTestNetworks ? [sepolia, foundry] : []),
   ],
   [
     publicProvider(),
