@@ -1,5 +1,5 @@
 import { configureChains, createConfig } from 'wagmi'
-import { getDefaultWallets, RainbowKitProvider } from '@rainbow-me/rainbowkit'
+import { getDefaultWallets } from '@rainbow-me/rainbowkit'
 import { foundry, sepolia, mainnet } from 'wagmi/chains'
 // import { CoinbaseWalletConnector } from 'wagmi/connectors/coinbaseWallet'
 // import { InjectedConnector } from 'wagmi/connectors/injected'
@@ -8,7 +8,7 @@ import { foundry, sepolia, mainnet } from 'wagmi/chains'
 
 import { publicProvider } from 'wagmi/providers/public'
 
-const includeTestNetworks = process.env.NODE_ENV === 'development' || process.env.APP_ENV === 'development'
+const includeTestNetworks = process.env.NODE_ENV === 'development' || process.env.NEXT_PUBLIC_APP_ENV === 'development'
 export const { chains, publicClient, webSocketPublicClient } = configureChains(
   [
     mainnet,
