@@ -1,22 +1,34 @@
-import { configureChains, createConfig } from 'wagmi'
+import { ChainProviderFn, configureChains, createConfig } from 'wagmi'
 import { getDefaultWallets } from '@rainbow-me/rainbowkit'
-import { foundry, sepolia, mainnet } from 'wagmi/chains'
+import { foundry, sepolia, mainnet, Chain } from 'wagmi/chains'
 // import { CoinbaseWalletConnector } from 'wagmi/connectors/coinbaseWallet'
 // import { InjectedConnector } from 'wagmi/connectors/injected'
 // import { MetaMaskConnector } from 'wagmi/connectors/metaMask'
 // import { WalletConnectConnector } from 'wagmi/connectors/walletConnect'
 
 import { publicProvider } from 'wagmi/providers/public'
+import { alchemyProvider } from 'wagmi/providers/alchemy'
 
-const includeTestNetworks = process.env.NODE_ENV === 'development' || process.env.NEXT_PUBLIC_APP_ENV === 'development'
+const testNetworks = []
+if (process.env.NODE_ENV === 'development') {
+  testNetworks.push(foundry)
+}
+if (process.env.NODE_ENV === 'development' || process.env.NEXT_PUBLIC_APP_ENV === 'development') {
+  testNetworks.push(sepolia)
+}
+
+const rpcProviders: ChainProviderFn<any>[] = []
+if (process.env.NEXT_PUBLIC_ALCHEMY_API_KEY) {
+  rpcProviders.push(alchemyProvider({ apiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY }))
+}
+rpcProviders.push(publicProvider())
+
 export const { chains, publicClient, webSocketPublicClient } = configureChains(
   [
     mainnet,
-    ...(includeTestNetworks ? [sepolia, foundry] : []),
+    ...testNetworks,
   ],
-  [
-    publicProvider(),
-  ],
+  rpcProviders
 )
 
 /*
