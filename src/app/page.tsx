@@ -52,23 +52,21 @@ export default function Page({
     write: mint,
   } = useFourbyNftMintTo(config)
 
+  const {
+    isSuccess: isWaitForTransactionSuccess,
+    data: waitForTransactionData,
+  } = useWaitForTransaction({
+    hash: mintData?.hash as `0x${string}`,
+  })
+
   useEffect(() => {
     if (isMintLoading) {
       txToastId.current = toast.loading(<ProcessingMessage loading={true} hash={mintData?.hash} />, { id: txToastId.current })
     } else if (isMintError) {
       txToastId.current = toast.error(<ProcessingMessage error={(mintError as BaseError)?.shortMessage} hash={mintData?.hash} />, { id: txToastId.current })
-    } else if (isMintSuccess) {
+    // } else if (isMintSuccess) {
+    } else if (isWaitForTransactionSuccess) {
       txToastId.current = toast.success(<ProcessingMessage success={true} hash={mintData?.hash} />, { id: txToastId.current })
-    }
-  }, [isMintLoading, isMintError, isMintSuccess]) // eslint-disable-line react-hooks/exhaustive-deps
-
-  const {
-    isSuccess: waitForTransactionSuccess,
-    data: waitForTransactionData,
-  } = useWaitForTransaction({ hash: mintData?.hash as `0x${string}` })
-
-  useEffect(() => {
-    if (waitForTransactionSuccess) {
       waitForTransactionData?.logs.forEach((log) => {
         const decodedLog = decodeEventLog({
           abi: fourbyNftABI,
@@ -84,10 +82,9 @@ export default function Page({
         }
       })
     }
-  }, [waitForTransactionSuccess, waitForTransactionData]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [isMintLoading, isMintError, isMintSuccess, isWaitForTransactionSuccess, waitForTransactionData]) // eslint-disable-line react-hooks/exhaustive-deps
 
   function openExplorer(baseUrl: string, hash: `0x${string}` | undefined) {
-    console.log('here we go')
     const url = hash ? `${baseUrl}/tx/${hash}` : baseUrl
     window.open(url, "_blank")
   }
