@@ -22,7 +22,7 @@ To compile and deploy contracts (in `./contracts`) to the Anvil node, run `npm r
 
 Once you've done both of these things, you should be able to open [localhost:3000](http://localhost:3000) in your browser, connect a wallet, and mint an NFT using one of the test accounts that Foundry provides for you (check Anvil output and import the private key into your web wallet).
 
-## Deployment
+# Deployment
 
 To deploy your contracts to Sepolia, run `npm run deploy:sepolia`. You'll need to first ensure that your `.env` file has the appropriate values set. You can create a free account with [Alchemy](https://www.alchemy.com/) and set the RPC URL to your project there (make sure to also add the API key).
 
