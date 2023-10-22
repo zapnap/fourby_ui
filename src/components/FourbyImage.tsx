@@ -59,14 +59,19 @@ export function FourbyImage({ id }: FourbyImageProps) {
     return Buffer.from(encodedImage.substring(26), "base64").toString();
   }
 
+  const sanitizeSvg = (svg: string) => {
+    const sanitized = sanitize(svg)
+    return sanitized.replace(/<svg/g, `<svg width="100%"`)
+  }
+
   useEffect(() => {
     setCustomTokenId(id)
     updateImage(id)
   }, [id]) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <div className="w-250">
-      <form className="relative w-full max-w-[250px] mb-2">
+    <div style={{ width: "max-content" }}>
+      <form className="relative mb-2">
         <Input
           size="lg"
           label="Token ID"
@@ -74,7 +79,7 @@ export function FourbyImage({ id }: FourbyImageProps) {
           value={customTokenId}
           type="number"
           placeholder={id}
-          className="peer w-full rounded-[7px] border px-4 py-2 pr-20 transition-all"
+          className="peer rounded-[7px] border px-4 py-2 pr-20 transition-all"
           onChange={(e) => setCustomTokenId(e.target.value)}
         />
         <Button
@@ -84,10 +89,8 @@ export function FourbyImage({ id }: FourbyImageProps) {
             Fetch
         </Button>
       </form>
-      <div className="max-w-[250px]">
-        <div dangerouslySetInnerHTML={{__html: sanitize(imageData)}} />
-        {error && <p className="text-red-500">ERROR: {error}</p>}
-      </div>
+      <div style={{ width: "max-content" }} dangerouslySetInnerHTML={{__html: sanitizeSvg(imageData)}} />
+      {error && <p className="text-red-500">ERROR: {error}</p>}
     </div>
   )
 }
