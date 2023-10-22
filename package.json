@@ -6,8 +6,9 @@
     "anvil": "export $(xargs <.env) && anvil --fork-url $ANVIL_FORK_URL --chain-id $ANVIL_CHAIN_ID",
     "build": "next build",
     "dev:build": "npm run wagmi && next build",
-    "deploy:goerli": "export $(xargs <.env) && cd contracts && DEPLOY_CHAIN=GOERLI forge script script/FourbyNFT.s.sol:FourbyScript --rpc-url $GOERLI_RPC_URL --private-key $GOERLI_PRIVATE_KEY --broadcast -vvvv --etherscan-api-key $ETHERSCAN_API_KEY --verify && cd .. && npm run wagmi",
     "deploy:sepolia": "export $(xargs <.env) && cd contracts && DEPLOY_CHAIN=SEPOLIA forge script script/FourbyNFT.s.sol:FourbyScript --rpc-url $SEPOLIA_RPC_URL --private-key $SEPOLIA_PRIVATE_KEY --broadcast -vvvv --etherscan-api-key $ETHERSCAN_API_KEY --verify && cd .. && npm run wagmi",
+    "deploy:optimism": "export $(xargs <.env) && cd contracts && DEPLOY_CHAIN=OPTIMISM_MAINNET forge script script/FourbyNFT.s.sol:FourbyScript --rpc-url $OPTIMISM_MAINNET_RPC_URL --private-key $OPTIMISM_MAINNET_PRIVATE_KEY --broadcast -vvvv --etherscan-api-key $ETHERSCAN_API_KEY --verify && cd .. && npm run wagmi",
+    "deploy:base": "export $(xargs <.env) && cd contracts && DEPLOY_CHAIN=BASE_MAINNET forge script script/FourbyNFT.s.sol:FourbyScript --rpc-url $BASE_MAINNET_RPC_URL --private-key $BASE_MAINNET_PRIVATE_KEY --broadcast -vvvv --etherscan-api-key $ETHERSCAN_API_KEY --verify && cd .. && npm run wagmi",
     "deploy:anvil": "export $(xargs <.env) && cd contracts && DEPLOY_CHAIN=FORGE forge script script/FourbyNFT.s.sol:FourbyScript --rpc-url=$FORGE_RPC_URL --private-key $FORGE_PRIVATE_KEY --broadcast -vvvv && cd .. && npm run wagmi",
     "dev": "npm run wagmi && next dev",
     "dev:foundry": "npm run dev & wagmi generate --watch & npm run anvil",
@@ -19,6 +20,7 @@
     "@material-tailwind/react": "^2.1.1",
     "@rainbow-me/rainbowkit": "^1.0.11",
     "@types/dompurify": "^3.0.2",
+    "@wagmi/chains": "^1.8.0",
     "@wagmi/cli": "^1.0.0",
     "dompurify": "^3.0.5",
     "encoding": "^0.1.13",
@@ -28,8 +30,8 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-hot-toast": "^2.4.1",
-    "viem": "~0.3.36",
-    "wagmi": "^1.4.3"
+    "viem": "^1.16.6",
+    "wagmi": "^1.4.5"
   },
   "devDependencies": {
     "@types/fs-extra": "^11.0.2",

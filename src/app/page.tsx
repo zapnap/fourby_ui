@@ -7,7 +7,7 @@ import { toastOptions } from "../util/toasthelper"
 
 import { BaseError, decodeEventLog, parseEther } from "viem"
 import { useNetwork, useAccount, useWaitForTransaction } from "wagmi"
-
+ 
 import { Button, Card, CardBody, Typography } from "@material-tailwind/react"
 
 import { Connected } from "../components/Connected"
@@ -18,6 +18,7 @@ import {
   usePrepareFourbyNftMintTo,
   useFourbyNftCurrentTokenId,
   fourbyNftABI,
+  useFourbyNftMintEnded,
 } from "../generated"
 
 export default function Page({
@@ -29,9 +30,19 @@ export default function Page({
 }) {
   const txToastId = useRef("")
   const [mintState, setMintState] = useState({ id: "0" })
+  const [mintReady, setMintReady] = useState({ enabled: false, loading: true })
   const { address } = useAccount()
   const { chain } = useNetwork()
 
+  useFourbyNftMintEnded({
+    onSuccess: (data) => {
+      console.log('Mint active? ', !data)
+      setMintReady({ enabled: !data, loading: false })
+      if (data) {
+        toast.error(<span>Minting has ended</span>)
+      }
+    }
+  })
   useFourbyNftCurrentTokenId({
     // args: [],
     onSuccess: (data) => {
@@ -121,8 +132,8 @@ export default function Page({
   return (
     <div>
       <Connected>
-        <div className="columns-2">
-          <div className="break-inside-avoid-column">
+        <div className="grid grid-cols-2 md:grid-cols-3">
+          <div className="break-inside-avoid-column col-start-1 col-span-1 md:col-span-2">
             <Card color="transparent" shadow={false}>
               <CardBody>
                 <Typography variant="h4" color="blue-gray">
@@ -131,10 +142,15 @@ export default function Page({
                 <Typography color="gray" className="mt-1 font-normal">
                   A generative art project with a pleasing color palette and dynamic elements to document changes in transaction costs over the course of the mint. Assets are built via SVG and stored 100% on-chain.
                 </Typography>
+                {!mintReady.loading && !mintReady.enabled &&
+                  <Typography color="red" className="mt-1 font-normal">
+                    Sorry! Minting has ended. Check back later for more.
+                  </Typography>
+                }
                 <Button
                   className="mt-4"
                   color="light-blue"
-                  disabled={isMintLoading}
+                  disabled={isMintLoading || mintReady.loading || !mintReady.enabled}
                   onClick={() => mint?.()}>
                     Mint
                 </Button>
@@ -142,7 +158,7 @@ export default function Page({
             </Card>
           </div>
           {mintState.id !== "0" &&
-            <div className="break-inside-avoid-column float-right">
+            <div className="break-inside-avoid-column col-start-2 md:col-start-3">
               <Card color="transparent" shadow={false}>
                 <CardBody>
                   <FourbyImage id={mintState.id} />
