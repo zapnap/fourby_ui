@@ -43,7 +43,6 @@ export default function Page({
 
   useFourbyNftMintEnded({
     onSuccess: (data) => {
-      console.log('Mint active? ', !data)
       setMintReady({ enabled: !data, loading: false })
       if (data) {
         toast.error(<span>Minting has ended</span>)
@@ -62,7 +61,6 @@ export default function Page({
   })
   useFourbyNftMintLastBlock({
     onSuccess: (data) => {
-      console.log(data)
       setMintLastBlock(Number(data))
     }
   })
