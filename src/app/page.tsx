@@ -5,7 +5,7 @@ import { useRef, useState, useEffect } from "react"
 import toast, { Toaster } from "react-hot-toast"
 import { toastOptions } from "../util/toasthelper"
 
-import { BaseError, decodeEventLog, parseEther } from "viem"
+import { BaseError, decodeEventLog, parseEther, formatEther } from "viem"
 import { useNetwork, useAccount, useWaitForTransaction } from "wagmi"
  
 import { Button, Card, CardBody, Typography } from "@material-tailwind/react"
@@ -19,6 +19,7 @@ import {
   useFourbyNftCurrentTokenId,
   fourbyNftABI,
   useFourbyNftMintEnded,
+  useFourbyNftMintPrice,
 } from "../generated"
 
 export default function Page({
@@ -31,6 +32,7 @@ export default function Page({
   const txToastId = useRef("")
   const [mintState, setMintState] = useState({ id: "0" })
   const [mintReady, setMintReady] = useState({ enabled: false, loading: true })
+  const [mintPrice, setMintPrice] = useState(0)
   const { address } = useAccount()
   const { chain } = useNetwork()
 
@@ -43,6 +45,12 @@ export default function Page({
       }
     }
   })
+  useFourbyNftMintPrice({
+    onSuccess: (data) => {
+      setMintPrice(Number(data))
+    }
+  })
+
   useFourbyNftCurrentTokenId({
     // args: [],
     onSuccess: (data) => {
@@ -153,6 +161,11 @@ export default function Page({
                   disabled={isMintLoading || mintReady.loading || !mintReady.enabled}
                   onClick={() => mint?.()}>
                     Mint
+                    {mintPrice > 0 &&
+                      <span>({formatEther(mintPrice)} ETH)</span>
+                      ||
+                      <span> for free</span>
+                    }
                 </Button>
               </CardBody>
             </Card>
