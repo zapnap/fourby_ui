@@ -6,7 +6,7 @@ import toast, { Toaster } from "react-hot-toast"
 import { toastOptions } from "../util/toasthelper"
 
 import { BaseError, decodeEventLog, parseEther, formatEther } from "viem"
-import { useNetwork, useAccount, useWaitForTransaction } from "wagmi"
+import { useNetwork, useAccount, useBlockNumber, useWaitForTransaction } from "wagmi"
  
 import { Button, Card, CardBody, Typography } from "@material-tailwind/react"
 
@@ -20,6 +20,8 @@ import {
   fourbyNftABI,
   useFourbyNftMintEnded,
   useFourbyNftMintPrice,
+  useFourbyNftEditionSize,
+  useFourbyNftMintLastBlock,
 } from "../generated"
 
 export default function Page({
@@ -33,8 +35,11 @@ export default function Page({
   const [mintState, setMintState] = useState({ id: "0" })
   const [mintReady, setMintReady] = useState({ enabled: false, loading: true })
   const [mintPrice, setMintPrice] = useState(0)
+  const [mintLimit, setMintLimit] = useState(0)
+  const [mintLastBlock, setMintLastBlock] = useState(0)
   const { address } = useAccount()
   const { chain } = useNetwork()
+  const { data: blockNumber } = useBlockNumber()
 
   useFourbyNftMintEnded({
     onSuccess: (data) => {
@@ -50,7 +55,17 @@ export default function Page({
       setMintPrice(Number(data))
     }
   })
-
+  useFourbyNftEditionSize({
+    onSuccess: (data) => {
+      setMintLimit(Number(data))
+    }
+  })
+  useFourbyNftMintLastBlock({
+    onSuccess: (data) => {
+      console.log(data)
+      setMintLastBlock(Number(data))
+    }
+  })
   useFourbyNftCurrentTokenId({
     // args: [],
     onSuccess: (data) => {
@@ -162,11 +177,28 @@ export default function Page({
                   onClick={() => mint?.()}>
                     Mint
                     {mintPrice > 0 &&
-                      <span>({formatEther(mintPrice)} ETH)</span>
+                      <span>({formatEther(BigInt(mintPrice))} ETH)</span>
                       ||
                       <span> for free</span>
                     }
                 </Button>
+
+                <div className="flex gap-2 mt-8">
+                  <div>
+                    {mintState.id}
+                    {Number(mintState.id) !== 0 && mintLimit !== 0 &&
+                      <span> / {mintLimit}</span>
+                    }
+                    <span> minted.</span>
+                  </div>
+                  {mintLastBlock !== 0 && Number(blockNumber) !== 0 && mintLastBlock > Number(blockNumber) &&
+                    <div>
+                      <span>
+                        {mintLastBlock - Number(blockNumber)} blocks remaining.
+                      </span>
+                    </div>
+                  }
+                </div>
               </CardBody>
             </Card>
           </div>
