@@ -5,7 +5,7 @@ import { useRef, useState, useEffect } from "react"
 import toast, { Toaster } from "react-hot-toast"
 import { toastOptions } from "../util/toasthelper"
 
-import { BaseError, decodeEventLog, parseEther, formatEther } from "viem"
+import { BaseError, decodeEventLog, formatEther } from "viem"
 import { useNetwork, useAccount, useBlockNumber, useWaitForTransaction } from "wagmi"
  
 import { Button, Card, CardBody, Typography } from "@material-tailwind/react"
@@ -39,19 +39,19 @@ export default function Page({
   const [mintLastBlock, setMintLastBlock] = useState(0)
   const { address } = useAccount()
   const { chain } = useNetwork()
-  const { data: blockNumber } = useBlockNumber()
+  const { data: blockNumber } = useBlockNumber({ watch: true })
 
   useFourbyNftMintEnded({
     onSuccess: (data) => {
       setMintReady({ enabled: !data, loading: false })
       if (data) {
-        toast.error(<span>Minting has ended</span>)
+        toast.error(<span>Sorry! Minting has ended</span>)
       }
     }
   })
   useFourbyNftMintPrice({
     onSuccess: (data) => {
-      setMintPrice(Number(data))
+      setMintPrice(Number(data)) // wei
     }
   })
   useFourbyNftEditionSize({
@@ -73,7 +73,7 @@ export default function Page({
 
   const { config } = usePrepareFourbyNftMintTo({
     args: [address as `0x${string}`],
-    value: parseEther('0'),
+    value: BigInt(mintPrice),
   })
   const {
     data: mintData,
@@ -121,6 +121,39 @@ export default function Page({
     window.open(url, "_blank")
   }
 
+  function blocksRemaining() {
+    const currentBlock = Number(blockNumber)
+    if (mintLastBlock !== 0 && currentBlock !== 0 && mintLastBlock > currentBlock) {
+      return mintLastBlock - currentBlock
+    } else {
+      return 0
+    }
+  }
+
+  function mintsRemaining() {
+    return mintLimit - Number(mintState.id)
+  }
+
+  function mintCountLimited() {
+    return mintLimit !== 0
+  }
+
+  function mintTimeLimited() {
+    return mintLastBlock !== 0
+  }
+
+  function mintEnded() {
+    if (!mintReady.loading && !mintReady.enabled) {
+      return true
+    } else if (mintTimeLimited() && blocksRemaining() === 0) {
+      return true
+    } else if (mintCountLimited() && mintsRemaining() === 0) {
+      return true
+    } else {
+      return false
+    }
+  }
+
   function ProcessingMessage({ success, loading, error, hash }: { success?: boolean, loading?: boolean, error?: String, hash?: `0x${string}` }) {
     const etherscan = chain?.blockExplorers?.etherscan
     if (error) {
@@ -163,37 +196,37 @@ export default function Page({
                 <Typography color="gray" className="mt-1 font-normal">
                   A generative art project with a pleasing color palette and dynamic elements to document changes in transaction costs over the course of the mint. Assets are built via SVG and stored 100% on-chain.
                 </Typography>
-                {!mintReady.loading && !mintReady.enabled &&
-                  <Typography color="red" className="mt-1 font-normal">
-                    Sorry! Minting has ended. Check back later for more.
-                  </Typography>
-                }
                 <Button
                   className="mt-4"
                   color="light-blue"
-                  disabled={isMintLoading || mintReady.loading || !mintReady.enabled}
+                  disabled={isMintLoading || mintReady.loading || mintEnded()}
                   onClick={() => mint?.()}>
                     Mint
                     {mintPrice > 0 &&
-                      <span>({formatEther(BigInt(mintPrice))} ETH)</span>
+                      <span> &mdash; {formatEther(BigInt(mintPrice))} ETH</span>
                       ||
                       <span> for free</span>
                     }
                 </Button>
 
-                <div className="flex gap-2 mt-8">
+                <div className="flex gap-2 mt-8 italic">
                   <div>
                     {mintState.id}
-                    {Number(mintState.id) !== 0 && mintLimit !== 0 &&
+                    {mintCountLimited() &&
                       <span> / {mintLimit}</span>
                     }
                     <span> minted.</span>
                   </div>
-                  {mintLastBlock !== 0 && Number(blockNumber) !== 0 && mintLastBlock > Number(blockNumber) &&
+                  {!mintEnded() && mintTimeLimited() &&
                     <div>
                       <span>
-                        {mintLastBlock - Number(blockNumber)} blocks remaining.
+                        {blocksRemaining()} blocks remaining.
                       </span>
+                    </div>
+                  }
+                  {mintEnded() &&
+                    <div className="text-red-500">
+                      Minting has ended.
                     </div>
                   }
                 </div>
