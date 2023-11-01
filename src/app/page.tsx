@@ -186,61 +186,60 @@ export default function Page({
   return (
     <div>
       <Connected>
-        <div className="flex gap-[2rem]">
-          <div className="pt-10">
-            <Card className="py-4 px-4">
-              <CardBody>
-                <Typography variant="h4" color="blue-gray">
-                  Blockstate Art.
-                </Typography>
-                <Typography color="gray" className="mt-1 font-normal">
-                  A generative art project with a pleasing color palette and dynamic elements to document changes in transaction costs over the course of the mint.
-                </Typography>
-                <Typography color="gray" className="mt-4 font-normal">
-                  Assets are built via SVG and stored 100% on-chain.
-                </Typography>
-                <Button
-                  className="mt-8"
-                  color="light-blue"
-                  disabled={isMintLoading || mintReady.loading || mintEnded()}
-                  onClick={() => mint?.()}>
-                    Mint
-                    {mintPrice > 0 &&
-                      <span> &mdash; {formatEther(BigInt(mintPrice))} ETH</span>
-                      ||
-                      <span> for free</span>
-                    }
-                </Button>
-              </CardBody>
-            </Card>
-
-            <div className="flex gap-2 mt-8 italic">
-              <div>
-                {mintState.id}
-                {mintCountLimited() &&
-                  <span> / {mintLimit}</span>
+        <div className="pt-10">
+          <Card className="py-4 px-4">
+            <CardBody>
+              <div className="flex flex-col md:flex-row gap-[2rem]">
+                {mintState.id !== "0" &&
+                  <FourbyImage id={mintState.id} />
                 }
-                <span> minted.</span>
-              </div>
-              {!mintEnded() && mintTimeLimited() &&
                 <div>
-                  <span>
-                    {blocksRemaining()} blocks remaining.
-                  </span>
+                  <Typography variant="h4" color="blue-gray">
+                    Blockstate Art.
+                  </Typography>
+                  <Typography color="gray" className="mt-1 font-normal">
+                    A generative art project with a pleasing color palette and dynamic elements to document changes in transaction costs over the course of the mint.
+                  </Typography>
+                  <Typography color="gray" className="mt-4 font-normal">
+                    Assets are built via SVG and stored 100% on-chain.
+                  </Typography>
+                  <Button
+                    className="mt-8"
+                    color="light-blue"
+                    disabled={isMintLoading || mintReady.loading || mintEnded()}
+                    onClick={() => mint?.()}>
+                      Mint
+                      {mintPrice > 0 &&
+                        <span> &mdash; {formatEther(BigInt(mintPrice))} ETH</span>
+                        ||
+                        <span> for free</span>
+                      }
+                  </Button>
+                  <div className="flex gap-2 mt-8 italic">
+                    <div>
+                      {mintState.id}
+                      {mintCountLimited() &&
+                        <span> / {mintLimit}</span>
+                      }
+                      <span> minted.</span>
+                    </div>
+                    {!mintEnded() && mintTimeLimited() &&
+                      <div>
+                        <span>
+                          {blocksRemaining()} blocks remaining.
+                        </span>
+                      </div>
+                    }
+                    {mintEnded() &&
+                      <div className="text-red-500">
+                        Minting has ended.
+                      </div>
+                    }
+                  </div>
                 </div>
-              }
-              {mintEnded() &&
-                <div className="text-red-500">
-                  Minting has ended.
-                </div>
-              }
-            </div>
-          </div>
-          {mintState.id !== "0" &&
-            <div className="pt-10">
-              <FourbyImage id={mintState.id} />
-            </div>
-          }
+              </div>
+            </CardBody>
+          </Card>
         </div>
       </Connected>
       <Toaster toastOptions={toastOptions}/>
