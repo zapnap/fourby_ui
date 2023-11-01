@@ -6,7 +6,7 @@ import { readContract } from "@wagmi/core"
 import { BaseError } from "viem"
 import { sanitize } from "dompurify"
 
-import { Card, CardBody, Input, Button, Typography } from "@material-tailwind/react"
+import { Card, CardHeader, CardBody, Input, Button, Typography } from "@material-tailwind/react"
 
 import {
   fourbyNftABI,
@@ -71,7 +71,15 @@ export function FourbyImage({ id }: FourbyImageProps) {
 
   return (
     <div style={{ width: "max-content" }}>
-      <form className="relative mb-2">
+      <Card className="w-full max-w-[26rem] shadow-lg pb-4">
+        <CardHeader floated={false}>
+          <div
+            className="card-image"
+            dangerouslySetInnerHTML={{__html: sanitizeSvg(imageData)}}
+          />
+        </CardHeader>
+      </Card>
+      <form className="relative mt-8 mb-2">
         <Input
           size="lg"
           label="Token ID"
@@ -84,12 +92,11 @@ export function FourbyImage({ id }: FourbyImageProps) {
         />
         <Button
           disabled={!isValid()}
-          className="ml-2 bg-gray-500 hover:bg-gray-600 !absolute right-1 top-1 z-10 rounded px-4 py-2.5 transition-all"
+          className="bg-gray-500 hover:bg-gray-600 !absolute right-1 top-1 z-10 rounded px-4 py-2.5 transition-all"
           onClick={async () => updateImage(customTokenId)}>
             Fetch
         </Button>
       </form>
-      <div style={{ width: "max-content" }} dangerouslySetInnerHTML={{__html: sanitizeSvg(imageData)}} />
       {error && <p className="text-red-500">ERROR: {error}</p>}
     </div>
   )

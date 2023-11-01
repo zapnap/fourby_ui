@@ -16,10 +16,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>
+      <body style={{ backgroundImage: `url(/images/stripes-light.webp)`}}>
         <Providers>
           <Nav></Nav>
-          <section className="mx-auto max-w-screen-xl py-2 lg:py-4">
+          <section className="mx-auto container py-2 lg:py-4">
             <section>
               {children}
             </section>

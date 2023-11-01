@@ -8,7 +8,7 @@ import { toastOptions } from "../util/toasthelper"
 import { BaseError, decodeEventLog, formatEther } from "viem"
 import { useNetwork, useAccount, useBlockNumber, useWaitForTransaction } from "wagmi"
  
-import { Button, Card, CardBody, Typography } from "@material-tailwind/react"
+import { Button, Typography, Card, CardHeader, CardBody } from "@material-tailwind/react"
 
 import { Connected } from "../components/Connected"
 import { FourbyImage } from "../components/FourbyImage"
@@ -186,18 +186,21 @@ export default function Page({
   return (
     <div>
       <Connected>
-        <div className="grid grid-cols-2 md:grid-cols-3">
-          <div className="break-inside-avoid-column col-start-1 col-span-1 md:col-span-2">
-            <Card color="transparent" shadow={false}>
+        <div className="flex gap-[2rem]">
+          <div className="pt-10">
+            <Card className="py-4 px-4">
               <CardBody>
                 <Typography variant="h4" color="blue-gray">
-                  Fourby - An NFT Project
+                  Blockstate Art.
                 </Typography>
                 <Typography color="gray" className="mt-1 font-normal">
-                  A generative art project with a pleasing color palette and dynamic elements to document changes in transaction costs over the course of the mint. Assets are built via SVG and stored 100% on-chain.
+                  A generative art project with a pleasing color palette and dynamic elements to document changes in transaction costs over the course of the mint.
+                </Typography>
+                <Typography color="gray" className="mt-4 font-normal">
+                  Assets are built via SVG and stored 100% on-chain.
                 </Typography>
                 <Button
-                  className="mt-4"
+                  className="mt-8"
                   color="light-blue"
                   disabled={isMintLoading || mintReady.loading || mintEnded()}
                   onClick={() => mint?.()}>
@@ -208,38 +211,34 @@ export default function Page({
                       <span> for free</span>
                     }
                 </Button>
-
-                <div className="flex gap-2 mt-8 italic">
-                  <div>
-                    {mintState.id}
-                    {mintCountLimited() &&
-                      <span> / {mintLimit}</span>
-                    }
-                    <span> minted.</span>
-                  </div>
-                  {!mintEnded() && mintTimeLimited() &&
-                    <div>
-                      <span>
-                        {blocksRemaining()} blocks remaining.
-                      </span>
-                    </div>
-                  }
-                  {mintEnded() &&
-                    <div className="text-red-500">
-                      Minting has ended.
-                    </div>
-                  }
-                </div>
               </CardBody>
             </Card>
+
+            <div className="flex gap-2 mt-8 italic">
+              <div>
+                {mintState.id}
+                {mintCountLimited() &&
+                  <span> / {mintLimit}</span>
+                }
+                <span> minted.</span>
+              </div>
+              {!mintEnded() && mintTimeLimited() &&
+                <div>
+                  <span>
+                    {blocksRemaining()} blocks remaining.
+                  </span>
+                </div>
+              }
+              {mintEnded() &&
+                <div className="text-red-500">
+                  Minting has ended.
+                </div>
+              }
+            </div>
           </div>
           {mintState.id !== "0" &&
-            <div className="break-inside-avoid-column col-start-2 md:col-start-3">
-              <Card color="transparent" shadow={false}>
-                <CardBody>
-                  <FourbyImage id={mintState.id} />
-                </CardBody>
-              </Card>
+            <div className="pt-10">
+              <FourbyImage id={mintState.id} />
             </div>
           }
         </div>
