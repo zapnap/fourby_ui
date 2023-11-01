@@ -11,9 +11,6 @@ import { Input, Button, Typography } from "@material-tailwind/react"
 import {
   fourbyNftABI,
   fourbyNftAddress,
-  useFourbyNftMintTo,
-  useFourbyNftTokenUri,
-  usePrepareFourbyNftMintTo,
 } from "../generated"
 
 interface FourbyImageProps {
@@ -64,18 +61,34 @@ export function FourbyImage({ id }: FourbyImageProps) {
     return sanitized.replace(/<svg/g, `<svg width="100%"`)
   }
 
+  const NftViewer = () => {
+    return (
+      <div
+        className="min-w-[300px] w-full h-full"
+        dangerouslySetInnerHTML={{__html: sanitizeSvg(imageData)}}
+      />
+    )
+  }
+
+  const NftLoader = () => {
+    return (
+      <div className="animate-pulse bg-gray-200 min-h-[300px] min-w-[300px] w-full pb-[100%]"></div>
+    )
+  }
+
   useEffect(() => {
-    setCustomTokenId(id)
-    updateImage(id)
+    if (id !== "0") {
+      setCustomTokenId(id)
+      updateImage(id)
+    }
   }, [id]) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div>
-      <div className="rounded overflow-hidden md:w-max">
-        <div
-          dangerouslySetInnerHTML={{__html: sanitizeSvg(imageData)}}
-        />
-        </div>
+      <div className="rounded overflow-hidden md:w-max min-w-[300px] min-h-[300px] aspect-square">
+        {customTokenId === "0" ? <NftLoader /> : <NftViewer />}
+      </div>
+      {customTokenId &&
         <form className="relative mt-8 mb-2">
           <Input
             size="lg"
@@ -94,7 +107,8 @@ export function FourbyImage({ id }: FourbyImageProps) {
               Fetch
           </Button>
         </form>
-        {error && <p className="text-red-500">ERROR: {error}</p>}
+      }
+      {error && <p className="text-red-500">ERROR: {error}</p>}
     </div>
   )
 }

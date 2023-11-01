@@ -190,18 +190,16 @@ export default function Page({
           <Card className="py-4 px-4">
             <CardBody>
               <div className="flex flex-col md:flex-row gap-[2rem]">
-                {mintState.id !== "0" &&
-                  <FourbyImage id={mintState.id} />
-                }
+                <FourbyImage id={mintState.id} />
                 <div>
                   <Typography variant="h4" color="blue-gray">
-                    Blockstate Art.
+                    Blockstate Art 🎨
                   </Typography>
                   <Typography color="gray" className="mt-1 font-normal">
-                    A generative art project with a pleasing color palette and dynamic elements to document changes in transaction costs over the course of the mint.
+                    A generative art project with a pleasing color palette and dynamic elements that document changes in transaction costs over the course of the mint.
                   </Typography>
                   <Typography color="gray" className="mt-4 font-normal">
-                    Assets are built via SVG and stored 100% on-chain.
+                    Assets are constructed with SVG and stored 100% on-chain.
                   </Typography>
                   <Button
                     className="mt-8"
