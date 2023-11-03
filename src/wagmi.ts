@@ -1,6 +1,6 @@
 import { ChainProviderFn, configureChains, createConfig } from 'wagmi'
 import { getDefaultWallets } from '@rainbow-me/rainbowkit'
-import { mainnet, foundry, sepolia, optimism, base, baseGoerli, Chain } from 'wagmi/chains'
+import { mainnet, foundry, sepolia, optimism, base, baseGoerli, optimismSepolia, Chain } from 'wagmi/chains'
 // import { CoinbaseWalletConnector } from 'wagmi/connectors/coinbaseWallet'
 // import { InjectedConnector } from 'wagmi/connectors/injected'
 // import { MetaMaskConnector } from 'wagmi/connectors/metaMask'
@@ -13,6 +13,7 @@ import { fourbyNftAddress } from "./generated"
 const testNetworks: Chain[] = []
 if (process.env.NODE_ENV === 'development' || process.env.NEXT_PUBLIC_APP_ENV === 'development') {
   testNetworks.push(baseGoerli)
+  testNetworks.push(optimismSepolia)
   testNetworks.push(sepolia)
 }
 if (process.env.NODE_ENV === 'development') {
