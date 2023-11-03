@@ -11,7 +11,7 @@ export default defineConfig({
       deployments: {
         FourbyNFT: contractDeployments(
           "FourbyNFT",
-          [chains.optimism.id, chains.base.id, chains.sepolia.id, chains.foundry.id]
+          [chains.optimism.id, chains.base.id, chains.baseGoerli.id, chains.sepolia.id, chains.foundry.id]
         ) as {}
         /*
         FourbyNFT: {
