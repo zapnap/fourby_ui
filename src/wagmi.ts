@@ -8,6 +8,7 @@ import { mainnet, foundry, sepolia, optimism, base, baseGoerli, optimismSepolia,
 
 import { publicProvider } from 'wagmi/providers/public'
 import { alchemyProvider } from 'wagmi/providers/alchemy'
+import { infuraProvider } from 'wagmi/providers/infura'
 import { fourbyNftAddress } from "./generated"
 
 const testNetworks: Chain[] = []
@@ -23,6 +24,9 @@ if (process.env.NODE_ENV === 'development') {
 const rpcProviders: ChainProviderFn<any>[] = []
 if (process.env.NEXT_PUBLIC_ALCHEMY_API_KEY) {
   rpcProviders.push(alchemyProvider({ apiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY }))
+}
+if (process.env.NEXT_PUBLIC_INFURA_API_KEY) {
+  rpcProviders.push(infuraProvider({ apiKey: process.env.NEXT_PUBLIC_INFURA_API_KEY }))
 }
 rpcProviders.push(publicProvider())
 
