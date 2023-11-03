@@ -1,6 +1,6 @@
 import { ChainProviderFn, configureChains, createConfig } from 'wagmi'
 import { getDefaultWallets } from '@rainbow-me/rainbowkit'
-import { foundry, sepolia, mainnet, Chain } from 'wagmi/chains'
+import { foundry, sepolia, optimism, base, baseGoerli, Chain } from 'wagmi/chains'
 // import { CoinbaseWalletConnector } from 'wagmi/connectors/coinbaseWallet'
 // import { InjectedConnector } from 'wagmi/connectors/injected'
 // import { MetaMaskConnector } from 'wagmi/connectors/metaMask'
@@ -10,11 +10,12 @@ import { publicProvider } from 'wagmi/providers/public'
 import { alchemyProvider } from 'wagmi/providers/alchemy'
 
 const testNetworks = []
+if (process.env.NODE_ENV === 'development' || process.env.NEXT_PUBLIC_APP_ENV === 'development') {
+  testNetworks.push(baseGoerli)
+  testNetworks.push(sepolia)
+}
 if (process.env.NODE_ENV === 'development') {
   testNetworks.push(foundry)
-}
-if (process.env.NODE_ENV === 'development' || process.env.NEXT_PUBLIC_APP_ENV === 'development') {
-  testNetworks.push(sepolia)
 }
 
 const rpcProviders: ChainProviderFn<any>[] = []
@@ -25,7 +26,9 @@ rpcProviders.push(publicProvider())
 
 export const { chains, publicClient, webSocketPublicClient } = configureChains(
   [
-    mainnet,
+    // mainnet,
+    optimism,
+    base,
     ...testNetworks,
   ],
   rpcProviders
