@@ -16,7 +16,7 @@ export function Connected({ children }: { children: ReactNode }) {
               Connection Required
             </Typography>
             <Typography variant="paragraph" className="mb-4 font-normal">
-              Fourby is a generative art project with a pleasing color palette and dynamic elements that document changes in transaction costs over the course of the mint. Assets are constructed via SVG and stored 100% on-chain.
+              Fourby a simple generative art experiment with a pleasing color palette and dynamic elements that document changes in transaction costs over the course of the mint. Assets are constructed via SVG and stored 100% on-chain.
             </Typography>
             <Typography variant="paragraph" className="font-normal">
               Want to mint one? Connect your wallet to get started.

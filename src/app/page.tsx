@@ -196,7 +196,7 @@ export default function Page({
                     Blockstate Art 🎨
                   </Typography>
                   <Typography color="gray" className="mt-1 font-normal">
-                    A generative art project with a pleasing color palette and dynamic elements that document changes in transaction costs over the course of the mint.
+                    Fourby is a simple generative art experiment with a pleasing color palette and dynamic elements that document changes in transaction costs over the course of the mint.
                   </Typography>
                   <Typography color="gray" className="mt-4 font-normal">
                     Assets are constructed via SVG and stored 100% on-chain.
