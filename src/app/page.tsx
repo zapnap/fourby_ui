@@ -199,7 +199,7 @@ export default function Page({
                     A generative art project with a pleasing color palette and dynamic elements that document changes in transaction costs over the course of the mint.
                   </Typography>
                   <Typography color="gray" className="mt-4 font-normal">
-                    Assets are constructed with SVG and stored 100% on-chain.
+                    Assets are constructed via SVG and stored 100% on-chain.
                   </Typography>
                   <Button
                     className="mt-8"
