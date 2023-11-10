@@ -9,8 +9,8 @@ export function Connected({ children }: { children: ReactNode }) {
 
   if (!isConnected) {
     return (
-      <div className="grid min-h-[140px] w-full place-items-center overflow-x-scroll rounded-lg p-6 lg:overflow-visible">
-        <Card className="w-1/2 mt-10 px-4 py-4">
+      <div className="grid min-h-[140px] w-full place-items-center rounded-lg p-6">
+        <Card className="md:w-1/2 mt-10 px-4 py-4">
           <CardBody>
             <Typography variant="h4" className="mb-2">
               Connection Required
