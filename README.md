@@ -1,6 +1,6 @@
 # Fourby UI
 
-Fourby is a simple generative art project with a pleasing color palette and dynamic elements to document changes in transaction costs over the course of the mint. Assets are built via SVG and stored 100% on-chain.
+[Fourby](https://fourby.xyz) is a simple generative art project with a pleasing color palette and dynamic elements to document changes in transaction costs over the course of the mint. Assets are built via SVG and stored 100% on-chain.
 
 This frontend is a [Next.js](https://nextjs.org) + [Foundry](https://book.getfoundry.sh/) + [wagmi](https://wagmi.sh) project bootstrapped with [`create-wagmi`](https://github.com/wagmi-dev/wagmi/tree/main/packages/create-wagmi). It also includes [RainbowKit](https://www.rainbowkit.com/) for wallet management and several other goodies.
 
