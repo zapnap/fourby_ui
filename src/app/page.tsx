@@ -13,6 +13,9 @@ import { Button, Typography, Card, CardHeader, CardBody } from "@material-tailwi
 import { Connected } from "../components/Connected"
 import { FourbyImage } from "../components/FourbyImage"
 
+import Image from "next/image"
+import Link from "next/link"
+
 import {
   useFourbyNftMintTo,
   usePrepareFourbyNftMintTo,
@@ -22,6 +25,7 @@ import {
   useFourbyNftMintPrice,
   useFourbyNftEditionSize,
   useFourbyNftMintLastBlock,
+  useFourbyNftVersion,
 } from "../generated"
 
 export default function Page({
@@ -32,6 +36,7 @@ export default function Page({
   searchParams: { [key: string]: string | string[] | undefined }
 }) {
   const txToastId = useRef("")
+  const [mintVersion, setMintVersion] = useState("0")
   const [mintState, setMintState] = useState({ id: "0" })
   const [mintReady, setMintReady] = useState({ enabled: false, loading: true })
   const [mintPrice, setMintPrice] = useState(0)
@@ -68,6 +73,11 @@ export default function Page({
     // args: [],
     onSuccess: (data) => {
       setMintState({ id: String(Number(data)) })
+    }
+  })
+  useFourbyNftVersion({
+    onSuccess: (data) => {
+      setMintVersion(data)
     }
   })
 
@@ -193,7 +203,15 @@ export default function Page({
                 <FourbyImage id={mintState.id} />
                 <div>
                   <Typography variant="h4" color="blue-gray">
-                    Blockstate Art 🎨
+                    Blockstate Art {mintVersion !== "0" ? `v${mintVersion}` : ""}
+                    <Link href="https://github.com/zapnap/fourby_ui" target="_blank" className="inline-block align-baseline ml-4">
+                      <Image
+                        src="/images/github-mark.png"
+                        width={18}
+                        height={18}
+                        alt="GitHub"
+                      />
+                    </Link>
                   </Typography>
                   <Typography color="gray" className="mt-1 font-normal">
                     Fourby is a simple generative art experiment with a pleasing color palette and dynamic elements that document changes in transaction costs over the course of the mint.
